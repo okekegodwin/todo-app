@@ -1,7 +1,5 @@
 require("dotenv").config();
 
-const jwt = require("jsonwebtoken");
-
 exports.signup = (req, res) => {
   res.status(201).json({ message: "User signed up successfully" });
 }
@@ -10,16 +8,13 @@ exports.login = async (req, res) => {
   try {
     const user = req.user;
 
-    const payload = {
+    req.session.user = {
       id: user._id,
       username: user.username
     }
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 1000 * 60 * 60});
-
     res.status(200).json({
-      message: "Login successful",
-      token: token
+      message: "Logged in successfully"
     })
   } catch (error) {
     res.status(500).json({ 
@@ -27,4 +22,13 @@ exports.login = async (req, res) => {
       err: error.message 
     });
   }
+}
+
+exports.logout = (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ message: "Logout failed" });
+    }
+    res.status(200).json({ message: "Logged out successfully"})
+  })
 }

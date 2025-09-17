@@ -5,8 +5,13 @@ const express = require("express");
 const mongoDatabase = require("./config/database");
 const userRoutes = require("./routes/user.route");
 
+const { sessionMiddleware } = require("./config/session")
+
 const app = express();
 const PORT = process.env.PORT;
+
+// session middleware
+app.use(sessionMiddleware);
 
 // third-party middleware
 app.use(express.json());
