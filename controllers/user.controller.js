@@ -1,34 +1,66 @@
-require("dotenv").config();
+const userService = require("../services/user.service");
 
-exports.signup = (req, res) => {
-  res.status(201).json({ message: "User signed up successfully" });
-}
-
-exports.login = async (req, res) => {
+exports.fetchProfile = async (req, res) => {
   try {
-    const user = req.user;
+    const userId = req.params.userId;
+    const user = await userService.getUserById(userId);
 
-    req.session.user = {
-      id: user._id,
-      username: user.username
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({
-      message: "Logged in successfully"
+    res.status(200).json({ 
+      username: user.username,
+      email: user.email
     })
+
   } catch (error) {
-    res.status(500).json({ 
-      message: "Login failed", 
-      err: error.message 
+    res.status(500).json({
+      message: "Error fetchinig user profile",
+      err: error.message
+    })
+  }
+}
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const updates = req.body;
+
+    const updatedUser = await userService.updateUserProfile(userId, updates);
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ 
+      message: 'Profile updated successfully',
+      user: updatedUser
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error updating user profile',
+      err: error.message
     });
   }
 }
 
-exports.logout = (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      return res.status(500).json({ message: "Logout failed" });
+exports.deleteProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const deletedUser = await userService.deleteUser(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json({ message: "Logged out successfully"})
-  })
+
+    res.status(200).json({ message: 'Profile deleted successfully' });
+    
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error deleting user profile',
+      err: error.message
+    });
+  }
 }

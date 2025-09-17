@@ -3,7 +3,8 @@ require("dotenv").config();
 const express = require("express");
 
 const mongoDatabase = require("./config/database");
-const userRoutes = require("./routes/user.route");
+const authRoute = require("./routes/auth.route");
+const userRoute = require("./routes/user.route");
 
 const { sessionMiddleware } = require("./config/session")
 
@@ -18,7 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // endpoints
-app.use("/users", userRoutes);
+app.use("/auth", authRoute);
+app.use("/profile", userRoute);
 
 // connect to mongo database
 mongoDatabase.connectToMongoDatabase();
