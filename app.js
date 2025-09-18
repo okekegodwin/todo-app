@@ -4,6 +4,7 @@ const express = require("express");
 const mongoDatabase = require("./config/database");
 const authRoute = require("./routes/auth.route");
 const userRoute = require("./routes/user.route");
+const todoRoute = require("./routes/todo.route");
 const { sessionMiddleware } = require("./config/session");
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 // endpoints
 app.use("/auth", authRoute);
 app.use("/profile", userRoute);
+app.use("/todo", todoRoute);
 
 // connect to mongo database
 mongoDatabase.connectToMongoDatabase();
