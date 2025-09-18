@@ -27,6 +27,10 @@ exports.updateProfile = async (req, res) => {
     const userId = req.params.userId;
     const updates = req.body;
 
+    if (req.session.user.id.toString() !== userId) {
+      return res.status(403).json({ message: "Forbidden: you can only update your own profile" });
+    }
+
     const updatedUser = await userService.updateUserProfile(userId, updates);
 
     if (!updatedUser) {
@@ -35,7 +39,10 @@ exports.updateProfile = async (req, res) => {
 
     res.status(200).json({ 
       message: 'Profile updated successfully',
-      user: updatedUser
+      user: {
+        username: updatedUser.username,
+        email: updatedUser.email
+      }
     });
 
   } catch (error) {
@@ -50,6 +57,10 @@ exports.deleteProfile = async (req, res) => {
   try {
     const userId = req.params.userId
     const deletedUser = await userService.deleteUser(userId);
+
+    if (req.session.user.id.toString() !== userId) {
+      return res.status(403).json({ message: "Forbidden: you can only delete your own profile" });
+    }
 
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });

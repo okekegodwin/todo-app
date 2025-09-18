@@ -1,12 +1,10 @@
 require("dotenv").config();
-
 const express = require("express");
 
 const mongoDatabase = require("./config/database");
 const authRoute = require("./routes/auth.route");
 const userRoute = require("./routes/user.route");
-
-const { sessionMiddleware } = require("./config/session")
+const { sessionMiddleware } = require("./config/session");
 
 const app = express();
 const PORT = process.env.PORT;
