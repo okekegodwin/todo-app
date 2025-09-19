@@ -2,22 +2,46 @@ const Todo = require("../models/todo.model");
 
 exports.createTodo = async (req, res) => {
   try {
-    const { title, dueDate } = req.body;
+    const input = req.body;
+    let savedTodos;
 
-    const toto = new Todo({
-      userId: req.session.user.id,
-      title: title,
-      dueDate: dueDate
+    if (Array.isArray(input)) {
+      if (input.length === 0) {
+        return res.status(400).json({ message: "Invalid input: Empty array provided" });
+      }
+
+      const todoWithUserId = input.map(todo => ({
+        ...todo,
+        userId: req.session.user.id
+      }))
+
+      savedTodos = await Todo.insertMany(todoWithUserId);
+
+      res.status(201).json({
+      message: "Task created successfully",
+      tasks: savedTodos
     })
+    } else {
+      if (!input.title) {
+        return res.status(400).json({ message: "Title required" });
+      }
 
-    const savedTodo = await toto.save();
-    res.status(201).json({
+      const todo = new Todo({
+        ...input,
+        userId: req.session.user.id
+      })
+
+      savedTodos = await todo.save();
+
+      res.status(201).json({
       message: "Task created successfully",
       task: {
-        title: savedTodo.title,
-        date: savedTodo.dueDate
+        title: savedTodos.title,
+        date: savedTodos.dueDate
       }
     })
+    }
+
   } catch (error) {
     res.status(500).json({ 
       message: "Error creating task",
@@ -37,6 +61,37 @@ exports.getAllTodos = async (req, res) => {
     res.status(200).json({ todos });
   } catch (error) {
     res.status(500).json({ message: "Error fetching tasks" });
+  }
+}
+
+exports.getTodosByDate = async (req, res) => {
+  try {
+    const { date } = req.params;
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const todos = await Todo.find({
+      userId: req.session.user.id,
+      dueDate: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    })
+
+    if (todos.length === 0) {
+      return res.status(404).json({ message: "No task found for this date" });
+    }
+
+    res.status(200).json(todos);
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Error fetching tasks for the specified date",
+      err: error.message
+    });
   }
 }
 
