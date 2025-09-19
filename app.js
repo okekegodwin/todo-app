@@ -25,9 +25,9 @@ app.use("/todo", todoRoute);
 // connect to mongo database
 mongoDatabase.connectToMongoDatabase();
 
-// app.get("/", (req, res) => {
-//   res.send("Hello world!");
-// })
+app.get("/", (req, res) => {
+  res.send("WELCOME TO THE HOME PAGE!");
+})
 
 app.listen(PORT, () => {
   console.log(`App is running on http://localhost:${PORT}`);

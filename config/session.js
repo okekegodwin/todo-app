@@ -20,6 +20,6 @@ exports.sessionMiddleware = session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    secure: false // Set to true in production
+    secure: true // Set to true in production
   }
 })
