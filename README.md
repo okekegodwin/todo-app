@@ -27,27 +27,63 @@ The project follows a layered architecture to seperate concerns:
 - `services`: Contains the core business logic and database operations, making the code reusable and easy to test.
 
 ## 📚 API Endpoints
-`POST` - `/auth/signup` - Registers a new user.
-
-`POST` - `/auth/login` - Logs in a user and creates a session.
-
-`POST` - `/auth/logout` - Destroys a user's session.
-
-`GET` - `/profile/:userId` - (Protected) Fetches a single user's profile.
-
-`PUT` - `/profile/:userId` - (Protected) Updates the logged-in user's profile.
-
-`DELETE` - `/profile/:userId` - (Protected) Deletes the logged-in user's account.
+| Method | Endpoint | Description |
+|  ---   |    ---   |    ---      |
+| `POST` | `/auth/signup` | Registers a new user. |
+| `POST` | `/auth/login` | Logs in a user and creates a session. |
+| `POST` | `/auth/logout` | Destroys a user's session. |
+| `GET`  | `/profile/:userId` | (Protected) Fetches a single user's profile. |
+| `PUT`  | `/profile/:userId` | (Protected) Updates the logged-in user's profile. |
+| `DELETE` | `/profile/:userId` | (Protected) Deletes the logged-in user's account. |
 
 ## 📋 To-Do Endpoints
-`POST` - `/todo` - (Protected) Creates one or more to-do items.
+| Method | Endpoint | Description |
+|  ---   |    ---   |    ---      |
+| `POST` | `/todo` | (Protected) Creates one or more to-do items. |
+| `GET`  | `/todo` | (Protected) Retrieves all to-do items for the logged-in user. |
+| `GET`  | `/todo/:todoId` | (Protected) Retrieves a single to-do items by its ID. |
+| `GET`  | `/todo/date/:date` | (Protected) Retrieves all to-do items for a specific date. |
+| `PUT`  | `/todo/:todoId` | (Protected) Updates a to-do item by its ID. |
+| `DELETE` | `/todo/:todoId` | (Protected) Deletes a to-do item by its ID. |
 
-`GET` - `/todo` - (Protected) Retrieves all to-do items for the logged-in user.
-
-`GET` - `/todo/:todoId` - (Protected) Retrieves a single to-do items by its ID.
-
-`GET` - `/todo/date/:date` - (Protected) Retrieves all to-do items for a specific date.
-
-`PUT` - `/todo/:todoId` - (Protected) Updates a to-do item by its ID.
-
-`DELETE` - `todo/:todoId` - (Protected) Deletes a to-do item by its ID.
+## 🧑‍💻 Usage Examples (with Postman)
+1. **User Signup**
+   - **Endpoint**: *`POST http://localhost:8000/auth/signup`*
+   - **Body (JSON)**
+   ```json
+    {
+      "username": "jerrysmith",
+      "email": "jerry@example.com",
+      "password": "jerry123"
+    }
+    ```
+2. **User Login**
+   - **Endpoint**: *`POST http://localhost:8000/auth/login`*
+   - **Body (JSON)**
+   ```json
+    {
+      "username": "jerrysmith",
+      "password": "jerry123"
+    }
+    ```
+3. **Create a Single To-Do**
+   - **Endpoint**: *`POST http://localhost:8000/todo`*
+   - **Body (JSON)**:
+   ```json
+    {
+      "title" : "Finish API documentation",
+      "dueDate": "2025-09-19"
+    }
+    ```
+4. **Create Multiple To-Dos (Bulk Create)**
+   - **Endpoint**: *`POST http://localhost:8000/todo`*
+   - **Body (JSON)**:
+   ```json
+    [
+      { "title": "Buy milk" , "dueDate": "2025-10-01" },
+      { "title": "Attend meeting", "dueDate": "2025-11-28" }
+    ]
+    ```
+5. **Fetch To-Dos for a Specific Date**
+   - **Endpoint**: *`GET http://localhost:8000/todo//date/2025-10-01`*
+   - **Body**: None
